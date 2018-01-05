@@ -7,19 +7,21 @@ from skidl import *
 GND_net = Net('GND')
 VIN_net = Net('VIN', drive=POWER)  # This turns off an ERC warning about drive strength into VIN of ldo.
 V25_net = Net('V25')
-ldo_adj_net = Net('ldo_adj')
+ldo_adj_net = Net('ldo_adj') 
 
 # create some components.
+
+# This is a Low Dropout Regulator in an 8 pin soic package, 100mA. Vref=1.25V.
+ldo      = Part('regul.lib',  'LM317L_SO8',  footprint=' Housings_SOIC:SOIC-8_3.9x4.9mm_Pitch1.27mm')
 div_res1 = Part('device', 'R', value='470',  footprint='Resistors_SMD:R_0805') # resistor 1
 div_res2 = Part('device', 'R', value='768',  footprint='Resistors_SMD:R_0805') # resistor 2
-c_in     = Part('device', 'C', value='10uF', footprint='device.lib:C')
-c_out    = Part('device', 'C', value='10uF', footprint='device.lib:C')
-ldo      = Part('regul.lib',  'LM317L_SO8',  footprint=' Housings_SOIC:SOIC-8_3.9x4.9mm_Pitch1.27mm')
+c_in     = Part('device', 'C', value='10uF', footprint='Capacitors_SMD:C_0805')
+c_out    = Part('device', 'C', value='10uF', footprint='Capacitors_SMD:C_0805')
 
 # wire up the components.
-ldo['VI'] += VIN_net; ldo['VO'] += V25_net; ldo['ADJ'] += ldo_adj_net; 
-c_in[1] += VIN_net; c_in[2] += GND_net; 
-c_out[1] += V25_net; c_out[2] += GND_net; 
+ldo['VI']   += VIN_net; ldo['VO'] += V25_net; ldo['ADJ'] += ldo_adj_net; 
+c_in[1]     += VIN_net; c_in[2] += GND_net; 
+c_out[1]    += V25_net; c_out[2] += GND_net; 
 div_res1[1] += V25_net; div_res1[2] += ldo_adj_net; 
 div_res2[1] += ldo_adj_net; div_res2[2] += GND_net; 
 
